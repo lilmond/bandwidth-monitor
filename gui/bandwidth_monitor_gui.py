@@ -26,15 +26,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         graph_style = {"font-size": "15px", "color": "white"}
 
-        self.dataGraph.setTitle("kB/s", **graph_style)
+        self.dataGraph.setTitle("B/s", **graph_style)
         self.dataGraph.setLabel("left", "Data", **graph_style)
         self.dataGraph.setBackground("#646464")
         self.dataGraph.showGrid(x=True, y=True)
+        self.dataGraph.setMouseEnabled(x=False, y=False)
 
         self.pktGraph.setTitle("Pkt/s", **graph_style)
         self.pktGraph.setLabel("left", "Packets", **graph_style)
         self.pktGraph.setBackground("#646464")
         self.pktGraph.showGrid(x=True, y=True)
+        self.pktGraph.setMouseEnabled(x=False, y=False)
 
         self.qTimer = QTimer()
         self.qTimer.setInterval(1000)
@@ -68,7 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.l_pt = pt
 
         self.log1[0].append(self.count)
-        self.log1[1].append(bps/1000)
+        self.log1[1].append(bps)
         self.log1[0].pop(0) if len(self.log1[0]) > self.max_count else None
         self.log1[1].pop(0) if len(self.log1[1]) > self.max_count else None
         self.dataGraph.clear()
@@ -79,8 +81,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log2[1].pop(0) if len(self.log2[1]) > self.max_count else None
         self.pktGraph.clear()
         
+        self.bytePs.setText(self.byte_show(bps))
+        self.byteSentPs.setText(self.byte_show(bsps))
+        self.byteRecvPs.setText(self.byte_show(brps))
         self.dataTotal.setText(self.byte_show(bt))
-        self.pktTotal.setText(str(f"{pt / 1000}K" if pt > 1000 else pt))
+        self.byteSent.setText(self.byte_show(bs))
+        self.byteRecv.setText(self.byte_show(br))
+
+        self.pktTotalPs.setText(self.pkt_show(ptps))
+        self.sentPktPs.setText(self.pkt_show(psps))
+        self.recvPktPs.setText(self.pkt_show(prps))
+        self.pktTotal.setText(self.pkt_show(pt))
+        self.sentPkt.setText(self.pkt_show(ps))
+        self.recvPkt.setText(self.pkt_show(pr))
 
         self.count += 1
 
@@ -96,6 +109,13 @@ class MainWindow(QtWidgets.QMainWindow):
             return f"{(num / 1000):.2f}{' ' * (space - len(f'{(num / 1000):.2f}'))}kB"
         else:
             return f"{(num):.2f}{' ' * (space - len(f'{(num):.2f}'))}B"
+    
+    def pkt_show(self, num):
+        if num > 1000000:
+            return f"{(num / 1000000):.2f} M"
+        elif num > 1000:
+            return f"{(num / 1000):.2f} K"
+        return f"{num}"
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
