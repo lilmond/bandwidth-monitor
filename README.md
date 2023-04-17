@@ -20,6 +20,15 @@ python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 pip install PyInstaller
+```
+Without UPX:
+```
+PyInstaller bandwidth_monitor_gui.py --noconsole --onefile --icon NONE
+```
+With UPX (ignore this if you're not sure about UPX):
+
+About UPX: https://en.wikipedia.org/wiki/UPX
+```
 PyInstaller bandwidth_monitor_gui.py --noconsole --onefile --icon NONE --upx-dir ./upx
 ```
 Make sure to copy the gui.ui in the same path with the executable version you built, otherwise, it will fail to run.
